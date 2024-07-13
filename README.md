@@ -35,3 +35,13 @@ Ce projet consiste en la création d'une API REST en Node.js/Express liée à un
   { "_id" : 4, "name" : "AC4 Phone4", "type" : "phone", "price" : 50.20, "rating" : 3,"warranty_years" : 2, "available" : true }
 ]
 ```
+
+Pour commencer, l'utilisateur doit suivre ces étapes :
+1. Dans le dossier du backend, exécuter la commande `npm run dev` pour démarrer le serveur Node.js.
+2. Dans le dossier du frontend, exécuter la commande `npm install` pour installer les dépendances, puis `npm run dev` pour lancer l'application React.
+
+Ces commandes sont nécessaires car :
+- `npm run dev` dans le backend lance le serveur Node.js avec les scripts définis dans le fichier `package.json`, permettant ainsi d'exécuter l'API REST.
+- `npm install` dans le frontend installe les dépendances déclarées dans le fichier `package.json`, assurant que l'application React dispose de tous les modules nécessaires pour fonctionner correctement. Ensuite, `npm run dev` démarre l'application en mode développement.
+
+Cela garantit que l'API et l'application Web sont correctement configurées et prêtes à être utilisées.
