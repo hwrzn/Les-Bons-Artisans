@@ -1,24 +1,24 @@
-import React, { useState, useEffect } from "react";
 import {
-  Container,
-  Typography,
   Box,
-  FormControlLabel,
-  Checkbox,
-  TextField,
   Button,
-} from "@mui/material";
-import { Link, useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+  Checkbox,
+  Container,
+  FormControlLabel,
+  TextField,
+  Typography,
+} from '@mui/material';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 function Edit() {
   const [data, setData] = useState({
-    _id: "",
-    name: "",
-    type: "",
-    price: "",
-    rating: "",
-    warranty_years: "",
+    _id: '',
+    name: '',
+    type: '',
+    price: '',
+    rating: '',
+    warranty_years: '',
     available: false,
   });
 
@@ -40,7 +40,7 @@ function Edit() {
     axios
       .put(`http://localhost:5000/api/products/${id}`, data)
       .then((res) => {
-        navigate("/");
+        navigate('/');
       })
       .catch((err) => {
         console.log(err);
@@ -48,7 +48,7 @@ function Edit() {
   };
 
   return (
-    <Container sx={{ marginTop: "3rem" }}>
+    <Container sx={{ marginTop: '3rem' }}>
       <Typography variant="h4" sx={{ marginBottom: 2 }}>
         Modifier le produit
       </Typography>
@@ -56,7 +56,7 @@ function Edit() {
       <Box
         component="form"
         onSubmit={handleSubmit}
-        sx={{ display: "flex", flexDirection: "column", gap: "2rem" }}
+        sx={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}
       >
         <TextField
           id="formName"
@@ -116,7 +116,7 @@ function Edit() {
           label="Disponible"
         />
 
-        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Button component={Link} to="/" variant="outlined" color="grey">
             Annuler
           </Button>

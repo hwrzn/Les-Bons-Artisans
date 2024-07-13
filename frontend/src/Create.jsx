@@ -1,24 +1,32 @@
-import React, { useState } from "react";
-import { Container, Typography, Box, TextField, Button } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import {
+  Box,
+  Button,
+  Checkbox,
+  Container,
+  FormControlLabel,
+  TextField,
+  Typography,
+} from '@mui/material';
+import axios from 'axios';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Create() {
   const [data, setData] = useState({
-    name: "",
-    type: "",
-    price: "",
-    rating: "",
-    warranty_years: "",
+    name: '',
+    type: '',
+    price: '',
+    rating: '',
+    warranty_years: '',
     available: false,
   });
 
   const [errors, setErrors] = useState({
-    name: "",
-    type: "",
-    price: "",
-    rating: "",
-    warranty_years: "",
+    name: '',
+    type: '',
+    price: '',
+    rating: '',
+    warranty_years: '',
   });
 
   const navigate = useNavigate();
@@ -26,47 +34,51 @@ function Create() {
   const validateForm = () => {
     let valid = true;
     const newErrors = {
-      name: "",
-      type: "",
-      price: "",
-      rating: "",
-      warranty_years: "",
+      name: '',
+      type: '',
+      price: '',
+      rating: '',
+      warranty_years: '',
     };
 
-    if (data.name.trim() === "") {
-      newErrors.name = "Le nom est requis";
-      valid = false;
-    }
+    const requiredFields = [
+      'name',
+      'type',
+      'price',
+      'rating',
+      'warranty_years',
+    ];
+    requiredFields.forEach((field) => {
+      if (data[field].trim() === '') {
+        newErrors[field] = `Le ${field} est requis`;
+        valid = false;
+      }
+    });
 
-    if (data.type.trim() === "") {
-      newErrors.type = "Le type est requis";
-      valid = false;
-    }
+    const validations = [
+      {
+        field: 'price',
+        message: 'Le prix doit être un nombre',
+        condition: (value) => isNaN(value),
+      },
+      {
+        field: 'rating',
+        message: 'La note doit être un nombre entre 0 et 5',
+        condition: (value) => isNaN(value) || +value < 0 || +value > 5,
+      },
+      {
+        field: 'warranty_years',
+        message: 'Les années de garantie doivent être un nombre',
+        condition: (value) => isNaN(value),
+      },
+    ];
 
-    if (data.price.trim() === "") {
-      newErrors.price = "Le prix est requis";
-      valid = false;
-    } else if (isNaN(data.price)) {
-      newErrors.price = "Le prix doit être un nombre";
-      valid = false;
-    }
-
-    if (data.rating.trim() === "") {
-      newErrors.rating = "La note est requise";
-      valid = false;
-    } else if (isNaN(data.rating) || +data.rating < 0 || +data.rating > 5) {
-      newErrors.rating = "La note doit être un nombre entre 0 et 5";
-      valid = false;
-    }
-
-    if (data.warranty_years.trim() === "") {
-      newErrors.warranty_years = "Les années de garantie sont requises";
-      valid = false;
-    } else if (isNaN(data.warranty_years)) {
-      newErrors.warranty_years =
-        "Les années de garantie doivent être un nombre";
-      valid = false;
-    }
+    validations.forEach(({ field, message, condition }) => {
+      if (newErrors[field] === '' && condition(data[field])) {
+        newErrors[field] = message;
+        valid = false;
+      }
+    });
 
     setErrors(newErrors);
     return valid;
@@ -76,9 +88,9 @@ function Create() {
     e.preventDefault();
     if (validateForm()) {
       axios
-        .post("http://localhost:5000/api/products", data)
+        .post('http://localhost:5000/api/products', data)
         .then((res) => {
-          navigate("/");
+          navigate('/');
         })
         .catch((err) => {
           console.log(err);
@@ -86,8 +98,46 @@ function Create() {
     }
   };
 
+  const costam = [
+    {
+      id: 'formName',
+      name: 'name',
+      label: 'Nom',
+      value: data.name,
+      error: errors.name,
+    },
+    {
+      id: 'formType',
+      name: 'type',
+      label: 'Type',
+      value: data.type,
+      error: errors.type,
+    },
+    {
+      id: 'formPrice',
+      name: 'price',
+      label: 'Prix',
+      value: data.price,
+      error: errors.price,
+    },
+    {
+      id: 'formRating',
+      name: 'rating',
+      label: 'Note',
+      value: data.rating,
+      error: errors.rating,
+    },
+    {
+      id: 'formWarrantyYears',
+      name: 'warranty_years',
+      label: 'Années de garantie',
+      value: data.warranty_years,
+      error: errors.warranty_years,
+    },
+  ];
+
   return (
-    <Container sx={{ marginTop: "3rem" }}>
+    <Container sx={{ marginTop: '3rem' }}>
       <Typography variant="h4" sx={{ marginBottom: 2 }}>
         Créer un produit
       </Typography>
@@ -95,64 +145,31 @@ function Create() {
       <Box
         component="form"
         onSubmit={handleSubmit}
-        sx={{ display: "flex", flexDirection: "column", gap: "2rem" }}
+        sx={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}
       >
-        <TextField
-          id="formName"
-          name="name"
-          label="Nom"
-          value={data.name}
-          onChange={(e) => setData({ ...data, name: e.target.value })}
-          fullWidth
-          error={!!errors.name}
-          helperText={errors.name}
+        {costam.map((field) => (
+          <TextField
+            key={field.id}
+            {...field}
+            onChange={(e) => setData({ ...data, [field.name]: e.target.value })}
+            fullWidth
+            error={!!field.error}
+            helperText={field.error}
+          />
+        ))}
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={data.available}
+              onChange={(e) =>
+                setData({ ...data, available: e.target.checked })
+              }
+              name="available"
+            />
+          }
+          label="Disponible"
         />
-
-        <TextField
-          id="formType"
-          name="type"
-          label="Type"
-          value={data.type}
-          onChange={(e) => setData({ ...data, type: e.target.value })}
-          fullWidth
-          error={!!errors.type}
-          helperText={errors.type}
-        />
-
-        <TextField
-          id="formPrice"
-          name="price"
-          label="Prix"
-          value={data.price}
-          onChange={(e) => setData({ ...data, price: e.target.value })}
-          fullWidth
-          error={!!errors.price}
-          helperText={errors.price}
-        />
-
-        <TextField
-          id="formRating"
-          name="rating"
-          label="Note"
-          value={data.rating}
-          onChange={(e) => setData({ ...data, rating: e.target.value })}
-          fullWidth
-          error={!!errors.rating}
-          helperText={errors.rating}
-        />
-
-        <TextField
-          id="formWarrantyYears"
-          name="warranty_years"
-          label="Années de garantie"
-          value={data.warranty_years}
-          onChange={(e) => setData({ ...data, warranty_years: e.target.value })}
-          fullWidth
-          error={!!errors.warranty_years}
-          helperText={errors.warranty_years}
-        />
-
-        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Button component={Link} to="/" variant="outlined" color="grey">
             Annuler
           </Button>

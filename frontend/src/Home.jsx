@@ -1,24 +1,24 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { Link } from "react-router-dom";
-import { Container, Typography, Button, Box } from "@mui/material";
-import SearchBar from "./components/SearchBar";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import ProductRow from "./components/ProductRow";
+import { Box, Button, Container, Typography } from '@mui/material';
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import ProductRow from './components/ProductRow';
+import SearchBar from './components/SearchBar';
 
 function Home() {
   const [data, setData] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/products")
+      .get('http://localhost:5000/api/products')
       .then((res) => setData(res.data))
       .catch((err) => console.log(err));
   }, []);
@@ -27,10 +27,10 @@ function Home() {
     setData(data.filter((product) => product._id !== id));
   };
 
-  const visibleProducts = data.filter((chantier) => {
+  const visibleProducts = data.filter((product) => {
     if (
       searchTerm &&
-      !chantier.name.toLowerCase().includes(searchTerm.toLowerCase())
+      !product.name.toLowerCase().includes(searchTerm.toLowerCase())
     ) {
       return false;
     }
@@ -40,16 +40,16 @@ function Home() {
   return (
     <Container
       sx={{
-        marginTop: "3rem",
-        display: "flex",
-        flexDirection: "column",
-        gap: "2rem",
+        marginTop: '3rem',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '2rem',
       }}
     >
       <Box
         sx={{
-          display: "flex",
-          justifyContent: "space-between",
+          display: 'flex',
+          justifyContent: 'space-between',
         }}
       >
         <Typography variant="h4">Liste des produits</Typography>
@@ -72,27 +72,37 @@ function Home() {
 }
 
 function ProductTable({ products, onDelete }) {
-  const rows = [];
-  for (let product of products) {
-    rows.push(
-      <ProductRow product={product} key={product._id} onDelete={onDelete} />
-    );
-  }
+  const titleHeader = [
+    'Produit 💻',
+    'Type 🏷️',
+    'Prix 💸',
+    'Note ⭐',
+    'Garantie 🛡️',
+    'Disponible 📢',
+    'Action ⚙️',
+  ];
+
   return (
     <TableContainer component={Paper}>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell sx={{ fontWeight: "bold" }}>Produit💻</TableCell>
-            <TableCell sx={{ fontWeight: "bold" }}>Type🏷️</TableCell>
-            <TableCell sx={{ fontWeight: "bold" }}>Prix💸</TableCell>
-            <TableCell sx={{ fontWeight: "bold" }}>Note⭐</TableCell>
-            <TableCell sx={{ fontWeight: "bold" }}>Garantie🛡️</TableCell>
-            <TableCell sx={{ fontWeight: "bold" }}>Disponible📢</TableCell>
-            <TableCell sx={{ fontWeight: "bold" }}>Action⚙️</TableCell>
+            {titleHeader.map((header, index) => (
+              <TableCell key={header + index} sx={{ fontWeight: 'bold' }}>
+                {header}
+              </TableCell>
+            ))}
           </TableRow>
         </TableHead>
-        <TableBody>{rows}</TableBody>
+        <TableBody>
+          {products.map((product) => (
+            <ProductRow
+              product={product}
+              key={product._id}
+              onDelete={onDelete}
+            />
+          ))}
+        </TableBody>
       </Table>
     </TableContainer>
   );
